@@ -5,7 +5,7 @@ from glue.viewers.scatter.state import ScatterLayerState
 from k3d import points
 import numpy as np
 
-from glue_k3d.utils import to_hex_int
+from glue_k3d.utils import color_info, fixed_color, size_info
 
 CMAP_PROPERTIES = {"cmap_mode", "cmap_att", "cmap_vmin", "cmap_vmax", "cmap"}
 BORDER_PROPERTIES = {
@@ -110,7 +110,7 @@ class K3DScatterLayerArtist(LayerArtist):
     def _create_points(self):
         options = dict(
             positions=self._positions(),
-            color=to_hex_int(self.state.color),
+            color=fixed_color(self.state),
             opacity=self.state.alpha,
         )
         if self.state.size_mode == "Fixed":
@@ -152,8 +152,23 @@ class K3DScatterLayerArtist(LayerArtist):
             if force or "alpha" in changed:
                 self.points.opacity = self.state.alpha
 
-            if force or "visible " in changed:
+            if force or "visible" in changed:
                 self.points.visible = self.state.visible
 
-            if force or "color" in changed:
-                self.points.color = to_hex_int(self.state.color)
+            if force or any(prop in changed for prop in MARKER_PROPERTIES):
+                size = size_info(self.state, None)
+                if self.state.size_mode == "Fixed":
+                    self.points.point_size = size
+                    self.points.point_sizes = []
+                else:
+                    self.points.point_sizes = size
+
+            if force or any(prop in changed for prop in CMAP_PROPERTIES) or \
+                        any(prop in changed for prop in ("color", "fill")):
+                color = color_info(self.state, None)
+                if self.state.cmap_mode == "Fixed":
+                    self.points.color = color
+                    self.points.colors = []
+                else:
+                    self.points.colors = color
+
