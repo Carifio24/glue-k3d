@@ -50,7 +50,7 @@ def hex_colors(layer_state, mask, cmap_att):
         color_values = color_values[mask]
     rgba_list = np.array([
         cmap(norm(point)) for point in color_values])
-    rgb_list = [[int(256 * t) for t in rgba[:3]] for rgba in rgba_list]
+    rgb_list = [[int(255 * t) for t in rgba[:3]] for rgba in rgba_list]
     hex_list = ["#{:02X}{:02X}{:02X}".format(*rgb) for rgb in rgb_list]
     return [to_hex_int(h) for h in hex_list]
 

@@ -1,3 +1,5 @@
+from ipywidgets import FloatSlider, IntSlider
+
 from k3d.factory import plot
 from IPython.display import display
 
@@ -7,12 +9,13 @@ from glue_jupyter.widgets import LinkedDropdown, Color, Size
 from glue_jupyter.view import IPyWidgetView
 from glue_jupyter.common.state3d import Scatter3DViewerState
 from glue_vispy_viewers.scatter.jupyter.viewer_state_widget import Scatter3DViewerStateWidget
+from glue_vispy_viewers.volume.viewer_state import Vispy3DVolumeViewerState
 
 from echo import CallbackProperty, SelectionCallbackProperty
 
 from glue_k3d.scatter_layer_artist import K3DScatterLayerArtist
 
-class K3DViewerState(Scatter3DViewerState):
+class K3DScatterViewerState(Scatter3DViewerState):
     pass
 
 
@@ -25,9 +28,20 @@ class Scatter3DLayerStateWidget(VBox):
         self.widget_visible = Checkbox(description='visible', value=self.state.visible)
         link((self.state, 'visible'), (self.widget_visible, 'value'))
 
+        self.widget_opacity = FloatSlider(min=0, max=1, step=0.01, value=self.state.alpha, description="Opacity")
+        link((self.state, 'alpha'), (self.widget_opacity, 'value'))
+
+        self.widget_shader = LinkedDropdown(self.state, 'shader', label="Shader")
+        link((self.state, 'shader'), (self.widget_shader, 'value'))
+
         self.widget_size = Size(state=self.state)
         self.widget_color = Color(state=self.state)
 
+        # self.widget_shininess = FloatSlider(min=0, max=100, value=self.state.shininess, label="Shininess")
+        # link((self.state, 'shininess'), (self.widget_shininess, 'value'))
+
+        # self.widget_mesh_detail = IntSlider(min=0, max=10, value=self.state.mesh_detail, label="Mesh Detail")
+        # link((self.state, 'mesh_detail'), (self.widget_mesh_detail, 'value'))
         # vector/quivers
         # self.widget_vector = Checkbox(description='show vectors', value=self.state.vector_visible)
 
@@ -46,14 +60,16 @@ class Scatter3DLayerStateWidget(VBox):
         # link((self.state, 'vector_visible'), (self.widget_vector, 'value'))
 
         super().__init__([self.widget_visible,
+                         self.widget_opacity, self.widget_shader,
                          self.widget_size, self.widget_color])
+                         # self.widget_shininess, self.widget_mesh_detail])
                          # self.widget_vector, self.widget_vector_x,
                          # self.widget_vector_y, self.widget_vector_z])
 
 
-class K3DView(IPyWidgetView):
+class K3DScatterView(IPyWidgetView):
 
-    _state_cls = K3DViewerState
+    _state_cls = K3DScatterViewerState
     _options_cls = Scatter3DViewerStateWidget
     _data_artist_cls = K3DScatterLayerArtist
     _subset_artist_cls = K3DScatterLayerArtist

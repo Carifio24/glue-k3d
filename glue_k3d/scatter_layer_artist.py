@@ -4,6 +4,7 @@ from glue.viewers.common.layer_artist import LayerArtist
 from glue.viewers.scatter.state import ScatterLayerState
 from k3d import points
 import numpy as np
+from glue_k3d.scatter_layer_state import K3DScatterLayerState
 
 from glue_k3d.utils import color_info, fixed_color, size_info
 
@@ -29,7 +30,7 @@ VISUAL_PROPERTIES = (
     | MARKER_PROPERTIES
     | BORDER_PROPERTIES
     | DENSITY_PROPERTIES
-    | {"color", "alpha", "zorder", "visible"}
+    | {"color", "alpha", "zorder", "visible", "shader"}
 )
 
 LIMIT_PROPERTIES = {"x_min", "x_max", "y_min", "y_max"}
@@ -53,7 +54,7 @@ DATA_PROPERTIES = {
 LINE_PROPERTIES = {"line_visible", "cmap_mode", "linestyle", "linewidth", "color"}
 
 class K3DScatterLayerArtist(LayerArtist):
-    _layer_state_cls = ScatterLayerState
+    _layer_state_cls = K3DScatterLayerState
 
     def __init__(self, view, viewer_state, layer_state=None, layer=None):
 
@@ -82,7 +83,7 @@ class K3DScatterLayerArtist(LayerArtist):
     def _update_data(self):
 
         try:
-            x = ensure_numerical(self.layer[self._viewer_state.x_att].ravel())
+            ensure_numerical(self.layer[self._viewer_state.x_att].ravel())
         except (IncompatibleAttribute, IndexError):
             self.disable_invalid_attributes(self._viewer_state.x_att)
             return
@@ -90,7 +91,7 @@ class K3DScatterLayerArtist(LayerArtist):
             self.enable()
 
         try:
-            y = ensure_numerical(self.layer[self._viewer_state.y_att].ravel())
+            ensure_numerical(self.layer[self._viewer_state.y_att].ravel())
         except (IncompatibleAttribute, IndexError):
             self.disable_invalid_attributes(self._viewer_state.y_att)
             return
@@ -98,7 +99,7 @@ class K3DScatterLayerArtist(LayerArtist):
             self.enable()
 
         try:
-            z = ensure_numerical(self.layer[self._viewer_state.z_att].ravel())
+            ensure_numerical(self.layer[self._viewer_state.z_att].ravel())
         except (IncompatibleAttribute, IndexError):
             self.disable_invalid_attributes(self._viewer_state.z_att)
             return
@@ -112,6 +113,7 @@ class K3DScatterLayerArtist(LayerArtist):
             positions=self._positions(),
             color=fixed_color(self.state),
             opacity=self.state.alpha,
+            shader=self.state.shader,
         )
         if self.state.size_mode == "Fixed":
             options["point_size"] = self.state.size
@@ -155,6 +157,9 @@ class K3DScatterLayerArtist(LayerArtist):
             if force or "visible" in changed:
                 self.points.visible = self.state.visible
 
+            if force or "shader" in changed:
+                self.points.shader = self.state.shader
+
             if force or any(prop in changed for prop in MARKER_PROPERTIES):
                 size = size_info(self.state, None)
                 if self.state.size_mode == "Fixed":
@@ -171,4 +176,3 @@ class K3DScatterLayerArtist(LayerArtist):
                     self.points.colors = []
                 else:
                     self.points.colors = color
-
