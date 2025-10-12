@@ -29,3 +29,7 @@ class K3DBaseView(IPyWidgetView):
                 }
             </style>
         """))
+
+    @property
+    def figure_widget(self):
+        return self.figure

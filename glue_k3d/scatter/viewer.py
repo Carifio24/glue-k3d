@@ -1,6 +1,5 @@
 from ipywidgets import FloatSlider
 
-
 from ipywidgets import Checkbox, VBox
 from glue_jupyter.link import link
 from glue_jupyter.widgets import LinkedDropdown, Color, Size
@@ -74,8 +73,3 @@ class K3DScatterView(K3DBaseView):
     def __init__(self, session, state=None):
         super().__init__(session, state=state)
         self.create_layout()
-
-
-    @property
-    def figure_widget(self):
-        return self.figure
