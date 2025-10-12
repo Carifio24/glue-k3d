@@ -7,9 +7,9 @@ from glue_jupyter.widgets import LinkedDropdown, Color, Size
 from glue_jupyter.common.state3d import Scatter3DViewerState
 from glue_vispy_viewers.scatter.jupyter.viewer_state_widget import Scatter3DViewerStateWidget
 
-from glue_k3d.base_viewer import K3DBaseView
+from glue_k3d.common.viewer import K3DBaseView
 
-from glue_k3d.scatter_layer_artist import K3DScatterLayerArtist
+from glue_k3d.scatter.layer_artist import K3DScatterLayerArtist
 
 class K3DScatterViewerState(Scatter3DViewerState):
     pass

@@ -1,10 +1,9 @@
 from glue.utils import ensure_numerical
 from glue.core.exceptions import IncompatibleAttribute
 from glue.viewers.common.layer_artist import LayerArtist
-from glue.viewers.scatter.state import ScatterLayerState
 from k3d import points
 import numpy as np
-from glue_k3d.scatter_layer_state import K3DScatterLayerState
+from glue_k3d.scatter.layer_state import K3DScatterLayerState
 
 from glue_k3d.utils import color_info, fixed_color, size_info
 
