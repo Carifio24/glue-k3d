@@ -26,6 +26,10 @@ def rgba_hex_to_rgb_hex(color):
     return color[:-2]
 
 
+def hex_to_rgb(hex_color):
+    hex_color = hex_color.lstrip('#')
+    return tuple(int(hex_color[2*i:2*i+2], 16) for i in range(3))
+
 def fixed_color(layer_state):
     layer_color = layer_state.color
     if layer_color == "0.35" or layer_color == "0.75":
@@ -84,3 +88,30 @@ def size_info(layer_state, mask=None):
     s *= (45 * layer_state.size_scaling)
     s[np.isnan(s)] = 0
     return s
+
+
+def single_color_map(color, N=256, stretch=None):
+    if color == "0.35" or color == "0.75":
+        color = "#808080"
+    r, g, b = hex_to_rgb(color)
+    data = np.zeros((N, 4), dtype=np.float32)
+    ramp = np.linspace(0, 1, N)
+    if stretch is not None:
+        ramp = stretch(ramp)
+    data[..., 0] = ramp
+    data[..., 1] = r
+    data[..., 2] = g
+    data[..., 3] = b
+    return data.flatten()
+
+
+def linear_color_map(cmap, N=256, stretch=None):
+    data = np.zeros((N, 4), dtype=np.float32)
+    ramp = np.linspace(0, 1, N)
+    if stretch is not None:
+        ramp = stretch(ramp)
+    colors = cmap(ramp)
+    for i in range(3):
+        data[..., i + 1] = [c[i] for c in colors]
+    data[..., 0] = ramp
+    return data.flatten()
