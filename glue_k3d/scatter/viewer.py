@@ -12,6 +12,8 @@ class K3DScatterViewerState(Scatter3DViewerState):
 
 class K3DScatterView(K3DBaseView):
 
+    LABEL = "K3D Scatter Viewer"
+
     _state_cls = K3DScatterViewerState
     _options_cls = Scatter3DViewerStateWidget
     _data_artist_cls = K3DScatterLayerArtist

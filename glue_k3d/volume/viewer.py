@@ -14,6 +14,8 @@ class K3DVolumeViewerState(VolumeViewerState):
 
 class K3DVolumeView(K3DBaseView):
 
+    LABEL = "K3D Volume Viewer"
+
     _state_cls = K3DVolumeViewerState
     _options_cls = K3DVolumeViewerStateWidget
     _layer_style_widget_cls = {
