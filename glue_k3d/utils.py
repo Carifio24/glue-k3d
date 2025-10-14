@@ -93,7 +93,7 @@ def size_info(layer_state, mask=None):
 def single_color_map(color, N=256, stretch=None):
     if color == "0.35" or color == "0.75":
         color = "#808080"
-    r, g, b = hex_to_rgb(color)
+    r, g, b = (c / 255 for c in hex_to_rgb(color))
     data = np.zeros((N, 4), dtype=np.float32)
     ramp = np.linspace(0, 1, N)
     if stretch is not None:
