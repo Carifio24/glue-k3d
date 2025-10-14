@@ -3,7 +3,7 @@ from glue.viewers.scatter.state import ScatterLayerState
 
 
 class K3DScatterLayerState(ScatterLayerState):
-    shader = SelectionCallbackProperty()
+    shader = SelectionCallbackProperty(default_index=3)
 
     def __init__(self, viewer_state=None, layer=None, **kwargs):
         super().__init__(viewer_state, layer, **kwargs) 
