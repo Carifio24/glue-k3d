@@ -68,11 +68,6 @@ class K3DVolumeLayerArtist(LayerArtist):
 
     def _create_volume(self):
 
-        # The 80 is a "magic number" - it just seems to give good results
-        # Mapping value -> opacity gives a completely opaque result(?)
-        ramp = np.linspace(0, 1, 256)
-        self.opacity_function = np.vstack((ramp, ramp / 80.0)).T
-
         if self.state.cmap_mode == "Fixed":
             cmap = single_color_map(self.state.color)
         else:
@@ -84,9 +79,6 @@ class K3DVolumeLayerArtist(LayerArtist):
             color_map=cmap,
             alpha_coef=100 * self.state.alpha,
         )
-
-        # if self.state.cmap_mode == "Fixed":
-        #     options["opacity_function"] = self.opacity_function
 
         return volume(**options)
 
