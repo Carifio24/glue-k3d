@@ -110,10 +110,12 @@ class K3DScatterLayerArtist(LayerArtist):
     def _create_points(self):
         options = dict(
             positions=self._positions(),
-            color=fixed_color(self.state),
             opacity=self.state.alpha,
             shader=self.state.shader,
         )
+        color = color_info(self.state, None)
+        color_key = "color" if self.state.cmap_mode == "Fixed" else "colors"
+        options[color_key] = color
         if self.state.size_mode == "Fixed":
             options["point_size"] = self.state.size
         else:
