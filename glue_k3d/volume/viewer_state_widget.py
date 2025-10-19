@@ -19,6 +19,9 @@ class K3DVolumeViewerStateWidget(v.VuetifyTemplate):
     z_att_items = traitlets.List().tag(sync=True)
     z_att_selected = traitlets.Int(allow_none=True).tag(sync=True)
 
+    reference_data_items = traitlets.List().tag(sync=True)
+    reference_data_selected = traitlets.Int(allow_none=True).tag(sync=True)
+
     def __init__(self, viewer_state):
 
         super().__init__()
@@ -29,3 +32,8 @@ class K3DVolumeViewerStateWidget(v.VuetifyTemplate):
         link_glue_choices(self, viewer_state, "x_att")
         link_glue_choices(self, viewer_state, "y_att")
         link_glue_choices(self, viewer_state, "z_att")
+        link_glue_choices(self, viewer_state, "reference_data")
+
+        print("Setting up viewer state widget")
+        print(self.reference_data_selected)
+        print(self.viewer_state.reference_data)

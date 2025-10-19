@@ -1,6 +1,9 @@
 <template>
     <div class="glue-viewer-volume-3d">
         <div>
+            <v-select label="reference" :items="reference_data_items" v-model="reference_data_selected" hide-details />
+        </div>
+        <div>
             <v-select label="x axis" :items="x_att_items" v-model="x_att_selected" hide-details />
         </div>
         <div>

@@ -1,3 +1,5 @@
+import uuid
+
 from echo import CallbackProperty, SelectionCallbackProperty
 from glue.viewers.common.layer_artist import LayerArtist
 from glue_vispy_viewers.volume.layer_state import VolumeLayerState
@@ -6,6 +8,7 @@ from k3d.transform import get_bounds_fit_matrix
 import numpy as np
 
 from glue_k3d.utils import linear_color_map, single_color_map
+from glue_k3d.volume.data_proxy import DataProxy
 
 CMAP_PROPERTIES = {"cmap_mode", "cmap", "color", "alpha"}
 VISUAL_PROPERTIES = (
@@ -44,27 +47,26 @@ class K3DVolumeLayerArtist(LayerArtist):
             layer=layer,
         )
 
+        self.id = str(uuid.uuid4())
+        self._data_proxy = None
         self.view = view
         self._viewer_state.add_global_callback(self._update_display)
         self.volume = self._create_volume()
         self.view.figure += self.volume
+
 
     def remove(self):
         self.view.figure -= self.volume
         return super().remove()
 
     def _volume_data(self):
-        return np.clip((self.layer[self.state.attribute] - self.state.vmin) / (self.state.vmax - self.state.vmin), 0, 1)
+        if self._data_proxy is None:
+            self._data_proxy = DataProxy(self._viewer_state, self)
 
-    def _bounds(self):
-        x = self.layer[self._viewer_state.x_att]
-        y = self.layer[self._viewer_state.y_att]
-        z = self.layer[self._viewer_state.z_att]
-        return (
-            np.nanmin(x), np.nanmax(x),
-            np.nanmin(y), np.nanmax(y),
-            np.nanmin(z), np.nanmax(z),
-        )
+        data = self._data_proxy.compute_fixed_resolution_buffer(bounds=self._viewer_state._bounds())
+        data = (data - self.state.vmin) / (self.state.vmax - self.state.vmin)
+        data[np.isnan(data)] = 0
+        return np.clip(data, 0, 1)
 
     def _create_volume(self):
 
@@ -74,9 +76,9 @@ class K3DVolumeLayerArtist(LayerArtist):
             cmap = linear_color_map(self.state.cmap)
 
         options = dict(
-            volume=self._volume_data(),
-            model_matrix=get_bounds_fit_matrix(*self._bounds()),
+            volume=np.ndarray((0,0,0)),
             color_map=cmap,
+            color_range=(0, 1),
             alpha_coef=100 * self.state.alpha,
         )
 
@@ -94,7 +96,11 @@ class K3DVolumeLayerArtist(LayerArtist):
                 self._update_visual_attributes(changed, force=force)
 
     def _update_data(self):
-        self.volume.volume = self._volume_data()
+        with self.volume.hold_trait_notifications():
+            data = self._volume_data()
+            self.volume.volume = data
+            bounds = [t for b in reversed(self._viewer_state._bounds()) for t in b[:2]]
+            self.volume.model_matrix = get_bounds_fit_matrix(*bounds)
 
     def _update_cmap(self):
         with self.volume.hold_trait_notifications():
