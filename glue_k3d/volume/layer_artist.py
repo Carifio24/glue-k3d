@@ -23,6 +23,7 @@ DATA_PROPERTIES = {
     "z_att",
     "vmin",
     "vmax",
+    "resolution",
 }
 
 
