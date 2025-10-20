@@ -78,7 +78,6 @@ class DataProxy(object):
             return (min, max, n + 1)
 
         full_view, permutation = self.viewer_state.numpy_slice_permutation
-        print(permutation)
 
         full_view[reference_axes[0]] = bounds[2]
         full_view[reference_axes[1]] = bounds[1]
