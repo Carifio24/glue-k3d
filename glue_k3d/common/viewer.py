@@ -7,6 +7,8 @@ from ipywidgets import HTML
 
 class K3DBaseView(IPyWidgetView):
 
+    tools = ["k3d:save"]
+
     def __init__(self, session, state=None):
         super().__init__(session, state=state)
 
