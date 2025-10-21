@@ -77,7 +77,7 @@ class K3DScatterLayerArtist(LayerArtist):
            self.layer[self._viewer_state.x_att], 
            self.layer[self._viewer_state.y_att], 
            self.layer[self._viewer_state.z_att], 
-        ]).transpose()
+        ]).transpose().astype(np.float32)
 
     def _update_data(self):
 
@@ -131,7 +131,7 @@ class K3DScatterLayerArtist(LayerArtist):
             s *= (45 * self.state.size_scaling)
             s[np.isnan(s)] = 0
 
-            options["point_sizes"] = s
+            options["point_sizes"] = s.astype(np.float32)
 
         return points(**options)
 
