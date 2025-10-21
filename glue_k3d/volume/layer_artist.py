@@ -67,7 +67,7 @@ class K3DVolumeLayerArtist(LayerArtist):
         data = self._data_proxy.compute_fixed_resolution_buffer(bounds=self._viewer_state._bounds())
         data = (data - self.state.vmin) / (self.state.vmax - self.state.vmin)
         data[np.isnan(data)] = 0
-        return np.clip(data, 0, 1)
+        return np.clip(data, 0, 1).astype(np.float32)
 
     def _create_volume(self):
 
@@ -77,7 +77,7 @@ class K3DVolumeLayerArtist(LayerArtist):
             cmap = linear_color_map(self.state.cmap)
 
         options = dict(
-            volume=np.ndarray((0,0,0)),
+            volume=np.ndarray((0,0,0)).astype(np.float32),
             color_map=cmap,
             color_range=(0, 1),
             alpha_coef=100 * self.state.alpha,
