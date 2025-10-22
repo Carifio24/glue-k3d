@@ -1,9 +1,11 @@
 import numpy as np
-from matplotlib.colors import Normalize
+from matplotlib.colors import Normalize, cnames
 from glue.utils import ensure_numerical
 
 
 def to_hex_int(color):
+    if not color.startswith("#"):
+        color = cnames.get(color, "#ffffff")
     return int(color[1:], 16)
 
 
@@ -29,6 +31,7 @@ def rgba_hex_to_rgb_hex(color):
 def hex_to_rgb(hex_color):
     hex_color = hex_color.lstrip('#')
     return tuple(int(hex_color[2*i:2*i+2], 16) for i in range(3))
+
 
 def fixed_color(layer_state):
     layer_color = layer_state.color
