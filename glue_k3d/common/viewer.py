@@ -1,8 +1,11 @@
+from glue.config import settings
 from glue_jupyter.view import IPyWidgetView
 
 from k3d.factory import plot, points
 from IPython.display import display
 from ipywidgets import HTML
+
+from glue_k3d.utils import to_hex_int
 
 
 class K3DBaseView(IPyWidgetView):
@@ -12,10 +15,15 @@ class K3DBaseView(IPyWidgetView):
     def __init__(self, session, state=None):
         super().__init__(session, state=state)
 
+        fg_color = to_hex_int(settings.FOREGROUND_COLOR)
         self.figure = plot(
             menu_visibility=False,
             grid=self._grid_bounds(),
             colorbar_object_id=-1,
+            background_color=to_hex_int(settings.BACKGROUND_COLOR),
+            label_color=fg_color,
+            grid_color=fg_color,
+            grid_visible=self.state.visible_grid,
         )
 
         self.anchors = points(
@@ -31,6 +39,7 @@ class K3DBaseView(IPyWidgetView):
         self.state.add_callback("x_max", self._update_anchors)
         self.state.add_callback("y_max", self._update_anchors)
         self.state.add_callback("z_max", self._update_anchors)
+        self.state.add_callback("visible_grid", self._update_grid)
 
         # By default, the K3D canvas has a z-index of 10
         # which causes it to be on top of things like our slideout menus
@@ -68,6 +77,19 @@ class K3DBaseView(IPyWidgetView):
     def _update_anchors(self, *args, **kwargs):
         self.anchors.positions = self._anchor_positions()
         self.figure.grid = self._grid_bounds()
+
+    def _update_grid(self, visible):
+        self.figure.grid_visible = visible
+
+    def _update_appearance_from_settings(self, message=None):
+        settings = message.settings
+        if "BACKGROUND_COLOR" in settings:
+            self.figure.background_color = to_hex_int(settings.BACKGROUND_COLOR)
+        if "FOREGROUND_COLOR" in settings:
+            color = to_hex_int(settings.FOREGROUND_COLOR)
+            self.figure.label_color = color
+            self.figure.grid_color = color
+        return super()._update_appearance_from_settings(message=message)
 
     @property
     def figure_widget(self):

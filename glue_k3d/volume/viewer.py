@@ -15,6 +15,7 @@ from glue_k3d.volume.viewer_state_widget import K3DVolumeViewerStateWidget
 
 class K3DVolumeViewerState(VolumeViewerState):
 
+    visible_grid = CallbackProperty(True)
     resolution = CallbackProperty(256)
     reference_data = SelectionCallbackProperty(docstring='The dataset that is used to define the '
                                                          'available pixel/world components, and '

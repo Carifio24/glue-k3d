@@ -1,3 +1,4 @@
+from echo import CallbackProperty
 from glue_jupyter.common.state3d import Scatter3DViewerState
 from glue_vispy_viewers.scatter.jupyter.viewer_state_widget import Scatter3DViewerStateWidget
 
@@ -7,7 +8,7 @@ from glue_k3d.scatter.layer_state_widget import Scatter3DLayerStateWidget
 
 
 class K3DScatterViewerState(Scatter3DViewerState):
-    pass
+    visible_grid = CallbackProperty(True) 
 
 
 class K3DScatterView(K3DBaseView):
