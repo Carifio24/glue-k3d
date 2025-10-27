@@ -90,7 +90,7 @@ def size_info(layer_state, mask=None):
     s += 0.05
     s *= (45 * layer_state.size_scaling)
     s[np.isnan(s)] = 0
-    return s
+    return s.astype(np.float32)
 
 
 def single_color_map(color, N=256, stretch=None):
