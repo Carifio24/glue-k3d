@@ -2,7 +2,7 @@ import numpy as np
 
 from k3d import points
 
-from glue_k3d.utils import color_info, size_info
+from glue_k3d.utils import color_info, layer_name, size_info
 
 
 def positions(viewer_state, layer_state):
@@ -19,6 +19,7 @@ def create_scatter(viewer_state, layer_state):
         positions=positions(viewer_state, layer_state),
         opacity=layer_state.alpha,
         shader=shader,
+        name=layer_name(layer_state),
     )
     cmap_mode_attr = "cmap_mode" if hasattr(layer_state, "cmap_mode") else "color_mode"
     cmap_attr = "cmap_att" if hasattr(layer_state, "cmap_att") else "cmap_attribute"
