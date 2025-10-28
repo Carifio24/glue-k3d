@@ -74,14 +74,15 @@ class K3DVolumeLayerArtist(LayerArtist):
 
     def _update_data(self):
         with self.volume.hold_trait_notifications():
+            bounds = viewer_bounds(self._viewer_state)
             try:
                 data = self._volume_data()
             except:
                 self.disable("Layer data is not fulled linked to x/y/z attributes")
-                shape = [bound[2] for bound in viewer_bounds(self._viewer_state)]
+                shape = [bound[2] for bound in bounds]
                 data = np.broadcast_to(0, shape)
             self.volume.volume = data
-            bounds = [t for b in reversed(self._viewer_state._bounds()) for t in b[:2]]
+            bounds = [t for b in reversed(bounds) for t in b[:2]]
             self.volume.model_matrix = get_bounds_fit_matrix(*bounds)
 
     def _update_cmap(self):
