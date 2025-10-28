@@ -18,19 +18,6 @@ class K3DBaseView(IPyWidgetView):
 
         self.figure = create_plot(self.state)
 
-        self.anchors = points(
-            positions=self._anchor_positions(),
-            point_size=1e-6,
-            opacity=0.0,
-        )
-        self.figure += self.anchors
-
-        self.state.add_callback("x_min", self._update_anchors)
-        self.state.add_callback("y_min", self._update_anchors)
-        self.state.add_callback("z_min", self._update_anchors)
-        self.state.add_callback("x_max", self._update_anchors)
-        self.state.add_callback("y_max", self._update_anchors)
-        self.state.add_callback("z_max", self._update_anchors)
         self.state.add_callback("visible_grid", self._update_grid)
 
         # By default, the K3D canvas has a z-index of 10
@@ -54,14 +41,6 @@ class K3DBaseView(IPyWidgetView):
                 }
             </style>
         """))
-
-    def _anchor_positions(self):
-        return ((self.state.x_min, self.state.y_min, self.state.z_min),
-                (self.state.x_max, self.state.y_max, self.state.z_max))
-
-    def _update_anchors(self, *args, **kwargs):
-        self.anchors.positions = self._anchor_positions()
-        self.figure.grid = grid_bounds(self.state)
 
     def _update_grid(self, visible):
         self.figure.grid_visible = visible
