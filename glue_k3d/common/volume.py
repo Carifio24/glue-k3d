@@ -1,6 +1,7 @@
 from glue.core.data import Subset
 from glue.core.link_manager import pixel_cid_to_pixel_cid_matrix
 from glue.core.state_objects import State
+from k3d.transform import get_bounds_fit_matrix
 import numpy as np
 
 from k3d.factory import volume
@@ -32,7 +33,7 @@ def fixed_resolution_buffer(viewer_state, layer, bounds):
     if layer is None or viewer_state is None:
         return np.broadcast_to(0, shape)
 
-    order = pixel_cid_order(viewer_state.reference_data, layer)
+    order = pixel_cid_order(viewer_state.reference_data, layer.layer)
     reference_axes = [viewer_state.x_att.axis,
                       viewer_state.y_att.axis,
                       viewer_state.z_att.axis]
@@ -107,15 +108,17 @@ def create_volume(viewer_state, layer_state, with_data=False):
 
     if with_data:
         bds = viewer_bounds(viewer_state)
-        data = volume_data(layer_state, data_proxy, bds)
+        data = volume_data(viewer_state, layer_state, bds)
     else:
         data = np.ndarray((0, 0, 0)).astype(np.float32)
 
+    bounds = [t for b in reversed(viewer_bounds(viewer_state)) for t in b[:2]]
     options = dict(
         volume=data,
         color_map=cmap,
         color_range=(0, 1),
         alpha_coef=100 * layer_state.alpha,
+        model_matrix = get_bounds_fit_matrix(*bounds)
     )
 
     return volume(**options)

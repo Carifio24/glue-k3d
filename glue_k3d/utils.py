@@ -78,7 +78,8 @@ def size_info(layer_state, mask=None):
         return layer_state.size_scaling * layer_state.size
 
     # scale size of points by set size scaling
-    data = layer_state.layer[layer_state.size_att]
+    size_attr = "size_att" if hasattr(layer_state, "size_att") else "size_attribute"
+    data = layer_state.layer[getattr(layer_state, size_attr)]
     if mask is not None:
         data = data[mask]
     s = ensure_numerical(data.ravel())
