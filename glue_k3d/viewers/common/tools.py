@@ -10,6 +10,8 @@ from IPython.display import display
 from glue.config import viewer_tool
 from glue.viewers.common.tool import Tool
 
+from glue_k3d.utils import save_snapshot
+
 
 @viewer_tool
 class K3DExportTool(Tool):
@@ -90,32 +92,7 @@ class K3DExportTool(Tool):
             self.viewer.output_widget.clear_output()
 
     def save_figure(self, filepath):
-        fig = self.viewer.figure
-
-        # Make the K3D menu visible for the export
-        fig.menu_visibility = True
-        html = fig.get_snapshot()
-        fig.menu_visibility = False
-
-        # Hide the colorbar
-        soup = BeautifulSoup(html, "html.parser")
-        style = soup.new_tag("style")
-        style.string = """
-        .colorMapLegend {
-            display: none !important;
-        }
-        """
-        head = soup.find("head")
-        if head:
-            head.append(style)
-        else:
-            soup.html.append(style)
-        html = soup.prettify()
-
-        with open(filepath, "w") as f:
-            f.write(html)
-
-
+        save_snapshot(self.viewer.figure, filepath)
 
 
     # Subclasses should override this if they have another dialog

@@ -5,6 +5,7 @@ from k3d.factory import plot, points
 from IPython.display import display
 from ipywidgets import HTML
 
+from glue_k3d.common.figure import create_plot, grid_bounds
 from glue_k3d.utils import to_hex_int
 
 
@@ -15,16 +16,7 @@ class K3DBaseView(IPyWidgetView):
     def __init__(self, session, state=None):
         super().__init__(session, state=state)
 
-        fg_color = to_hex_int(settings.FOREGROUND_COLOR)
-        self.figure = plot(
-            menu_visibility=False,
-            grid=self._grid_bounds(),
-            colorbar_object_id=-1,
-            background_color=to_hex_int(settings.BACKGROUND_COLOR),
-            label_color=fg_color,
-            grid_color=fg_color,
-            grid_visible=self.state.visible_grid,
-        )
+        self.figure = create_plot(self.state)
 
         self.anchors = points(
             positions=self._anchor_positions(),
@@ -67,16 +59,9 @@ class K3DBaseView(IPyWidgetView):
         return ((self.state.x_min, self.state.y_min, self.state.z_min),
                 (self.state.x_max, self.state.y_max, self.state.z_max))
 
-    def _grid_bounds(self):
-        return tuple(int(w) for w in
-                (self.state.x_min, self.state.x_max,
-                self.state.y_min, self.state.y_max,
-                self.state.z_min, self.state.z_max))
-
-
     def _update_anchors(self, *args, **kwargs):
         self.anchors.positions = self._anchor_positions()
-        self.figure.grid = self._grid_bounds()
+        self.figure.grid = grid_bounds(self.state)
 
     def _update_grid(self, visible):
         self.figure.grid_visible = visible

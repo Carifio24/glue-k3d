@@ -94,15 +94,6 @@ class K3DVolumeViewerState(VolumeViewerState):
         elif self.y_att == new_att:
             self.y_att = prev_att
 
-    def _bounds(self):
-        return [
-            (self.z_min, self.z_max, self.resolution),
-            (self.y_min, self.y_max, self.resolution),
-            (self.x_min, self.x_max, self.resolution),
-        ]
-
-
-
 
 class K3DVolumeView(K3DBaseView):
 

@@ -1,15 +1,13 @@
+import numpy as np
 import uuid
 
 from echo import CallbackProperty, SelectionCallbackProperty
 from glue.viewers.common.layer_artist import LayerArtist
 from glue_vispy_viewers.volume.layer_state import VolumeLayerState
-from glue_k3d.common.volume import create_volume
-from k3d.factory import volume
+from glue_k3d.common.volume import viewer_bounds, create_volume, volume_data
 from k3d.transform import get_bounds_fit_matrix
-import numpy as np
 
 from glue_k3d.utils import linear_color_map, single_color_map
-from glue_k3d.common.data_proxy import DataProxy
 
 CMAP_PROPERTIES = {"cmap_mode", "cmap", "color", "alpha"}
 VISUAL_PROPERTIES = (
@@ -50,10 +48,9 @@ class K3DVolumeLayerArtist(LayerArtist):
         )
 
         self.id = str(uuid.uuid4())
-        self._data_proxy = None
         self.view = view
         self._viewer_state.add_global_callback(self._update_display)
-        self.volume = create_volume(self.state)
+        self.volume = create_volume(self._viewer_state, self.state)
         self.view.figure += self.volume
 
 
@@ -62,13 +59,7 @@ class K3DVolumeLayerArtist(LayerArtist):
         return super().remove()
 
     def _volume_data(self):
-        if self._data_proxy is None:
-            self._data_proxy = DataProxy(self._viewer_state, self)
-
-        data = self._data_proxy.compute_fixed_resolution_buffer(bounds=self._viewer_state._bounds())
-        data = (data - self.state.vmin) / (self.state.vmax - self.state.vmin)
-        data[np.isnan(data)] = 0
-        return np.clip(data, 0, 1).astype(np.float32)
+        return volume_data(self._viewer_state, self.state)
 
     def _update_display(self, force=False, **kwargs):
         changed = self.pop_changed_properties()
@@ -83,7 +74,12 @@ class K3DVolumeLayerArtist(LayerArtist):
 
     def _update_data(self):
         with self.volume.hold_trait_notifications():
-            data = self._volume_data()
+            try:
+                data = self._volume_data()
+            except:
+                self.disable("Layer data is not fulled linked to x/y/z attributes")
+                shape = [bound[2] for bound in viewer_bounds(self._viewer_state)]
+                data = np.broadcast_to(0, shape)
             self.volume.volume = data
             bounds = [t for b in reversed(self._viewer_state._bounds()) for t in b[:2]]
             self.volume.model_matrix = get_bounds_fit_matrix(*bounds)

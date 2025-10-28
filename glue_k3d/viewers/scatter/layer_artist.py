@@ -66,7 +66,7 @@ class K3DScatterLayerArtist(LayerArtist):
 
         self.view = view
         self._viewer_state.add_global_callback(self._update_display)
-        self.points = create_scatter(self.state)
+        self.points = create_scatter(self._viewer_state, self.state)
         self.view.figure += self.points
 
     def remove(self):

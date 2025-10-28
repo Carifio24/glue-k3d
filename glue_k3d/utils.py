@@ -1,3 +1,4 @@
+from bs4 import BeautifulSoup
 import numpy as np
 from matplotlib.colors import Normalize, cnames
 from glue.utils import ensure_numerical
@@ -118,3 +119,31 @@ def linear_color_map(cmap, N=256, stretch=None):
         data[..., i + 1] = [c[i] for c in colors]
     data[..., 0] = ramp
     return data.flatten()
+
+
+def save_snapshot(figure, filepath):
+
+    original_menu_visibility = figure.menu_visibility
+
+    # Make the K3D menu visible for the export
+    figure.menu_visibility = True
+    html = figure.get_snapshot()
+    figure.menu_visibility = original_menu_visibility
+
+    # Hide the colorbar
+    soup = BeautifulSoup(html, "html.parser")
+    style = soup.new_tag("style")
+    style.string = """
+    .colorMapLegend {
+        display: none !important;
+    }
+    """
+    head = soup.find("head")
+    if head:
+        head.append(style)
+    else:
+        soup.html.append(style)
+    html = soup.prettify()
+
+    with open(filepath, "w") as f:
+        f.write(html)
