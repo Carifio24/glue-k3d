@@ -5,12 +5,12 @@ from glue.core.data import BaseData
 from glue.core.data_combo_helper import ManualDataComboHelper
 from glue_jupyter.common.state3d import VolumeViewerState
 
-from glue_k3d.common.viewer import K3DBaseView
-from glue_k3d.scatter.viewer import Scatter3DLayerStateWidget
-from glue_k3d.scatter.layer_artist import K3DScatterLayerArtist
-from glue_k3d.volume.layer_artist import K3DVolumeLayerArtist
-from glue_k3d.volume.layer_state_widget import K3DVolumeLayerStateWidget
-from glue_k3d.volume.viewer_state_widget import K3DVolumeViewerStateWidget
+from glue_k3d.viewers.common.viewer import K3DBaseView
+from glue_k3d.viewers.scatter.viewer import Scatter3DLayerStateWidget
+from glue_k3d.viewers.scatter.layer_artist import K3DScatterLayerArtist
+from glue_k3d.viewers.volume.layer_artist import K3DVolumeLayerArtist
+from glue_k3d.viewers.volume.layer_state_widget import K3DVolumeLayerStateWidget
+from glue_k3d.viewers.volume.viewer_state_widget import K3DVolumeViewerStateWidget
 
 
 class K3DVolumeViewerState(VolumeViewerState):
@@ -93,15 +93,6 @@ class K3DVolumeViewerState(VolumeViewerState):
             self.x_att = prev_att
         elif self.y_att == new_att:
             self.y_att = prev_att
-
-    def _bounds(self):
-        return [
-            (self.z_min, self.z_max, self.resolution),
-            (self.y_min, self.y_max, self.resolution),
-            (self.x_min, self.x_max, self.resolution),
-        ]
-
-
 
 
 class K3DVolumeView(K3DBaseView):
