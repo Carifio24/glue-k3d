@@ -1,7 +1,16 @@
 from bs4 import BeautifulSoup
 import numpy as np
 from matplotlib.colors import Normalize, cnames
+from glue.core import Subset
 from glue.utils import ensure_numerical
+
+
+def layer_name(state_or_artist):
+    layer = state_or_artist.layer
+    name = layer.label
+    if isinstance(layer, Subset):
+        name += f" ({layer.data.label})"
+    return name
 
 
 def to_hex_int(color):

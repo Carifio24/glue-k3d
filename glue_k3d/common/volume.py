@@ -6,7 +6,7 @@ import numpy as np
 
 from k3d.factory import volume
 
-from glue_k3d.utils import linear_color_map, single_color_map
+from glue_k3d.utils import layer_name, linear_color_map, single_color_map
 
 
 def viewer_bounds(state):
@@ -114,6 +114,7 @@ def create_volume(viewer_state, layer_state, with_data=False):
 
     bounds = [t for b in reversed(viewer_bounds(viewer_state)) for t in b[:2]]
     options = dict(
+        name=layer_name(layer_state),
         volume=data,
         color_map=cmap,
         color_range=(0, 1),
