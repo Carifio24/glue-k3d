@@ -3229,6 +3229,19 @@
   }
 }
 
+
+#functionality {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 25px;
+}
+
+#functionality .box {
+    flex-grow: 1;
+    flex-basis: 0;
+}
+
 #plotly-text-logo {
   aspect-ratio: 1100 / 417;
 }
