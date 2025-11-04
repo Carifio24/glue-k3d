@@ -148,11 +148,15 @@ def save_snapshot(figure, filepath):
         display: none !important;
     }
     """
-    head = soup.find("head")
-    if head:
-        head.append(style)
+
+    if figure.snapshot_type == "inline":
+        root = soup.find("div")
     else:
-        soup.html.append(style)
+        root = soup.find("head")
+        if not root:
+            root = soup.html
+
+    root.append(style)
     html = soup.prettify()
 
     with open(filepath, "w") as f:
