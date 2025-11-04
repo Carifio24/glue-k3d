@@ -1,6 +1,7 @@
 from glue.config import viewer_tool
 from qtpy import compat
 
+from glue_k3d import K3D_LOGO
 from glue_k3d.exporters.base import BaseK3DExportTool
 from glue_k3d.utils import save_snapshot
 
@@ -8,7 +9,7 @@ from glue_k3d.utils import save_snapshot
 @viewer_tool
 class K3DQtExportTool(BaseK3DExportTool):
 
-    icon = "glue_filesave"
+    icon = K3D_LOGO
     tool_id = "k3d:save_qt"
 
     def activate(self):

@@ -1,4 +1,7 @@
+import os
 from contextlib import suppress
+
+K3D_LOGO = os.path.abspath(os.path.join(os.path.dirname(__file__), "logo"))
 
 def setup():
 
