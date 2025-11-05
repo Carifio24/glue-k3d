@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<!--
+	Arcana by HTML5 UP
+	html5up.net | @n33co
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+
+<html>
+  <head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-76450307-1"></script>
+		<script>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			gtag('js', new Date());
+
+			gtag('config', 'UA-76450307-1');
+		</script>
+
+		<title>glue-k3d: K3D Plugin for glue</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="glue-k3d is a plugin for glueviz that allows creating K3D views using glue" />
+    <meta name="keywords" content="glue, K3D, export" />
+    <meta name="robots" content="index, follow" />
+
+    <meta name="og:title" content="glue-k3d: K3D plugin for glue" />
+    <meta name="og:description" content="glue-k3d is a plugin for glueviz that allows creating K3D views using glue" />
+    <meta name="og:type" content="article" />
+    <meta name="og:image" content="https://glueviz.org/glue-k3d/assets/img/logo_full.png" />
+    <meta name="og:url" content="https://glueviz.org/glue-k3d" />
+
+    <meta name="twitter:card" content="article" />
+    <meta name="twitter:site" content="glueviz" />
+    <meta name="twitter:creator" content="glueviz" />
+    <meta name="twitter:description" content="glue-k3d is a plugin for glueviz that allows creating K3D views using glue" />
+    <meta name="twitter:image" content="https://glueviz.org/glue-k3d/assets/img/logo_full.png" />
+
+		<link rel="icon" href="favicon.ico">
+		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="assets/css/main.css" />
+  </head>
+
+  <body>
+    <div id="header">
+      <img height=50 src="assets/img/logo.png">
+      <h1 id="logo">glue-k3d</h1>
+      <img height=50 src="assets/img/k3d.png">
+    </div>
+
+    <nav id="nav">
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#quickstart">Quickstart</a></li>
+        <li><a href="#exporters">Exporters</a></li>
+        <li><a href="#viewers">Viewers</a></li>
+      </ul>
+    </nav>
+
+    <section id="overview" class="nav-item container">
+      <h2>Overview</h2>
+      <p>
+        glue-k3d is a plugin for the <a href="https://glueviz.org">glue</a> visualization software which connects glue to 
+        <a href="https://k3d-jupyter.org/">K3D-jupyter</a>. This consists of two main pieces of functionality:
+      </p>
+
+      <section id="functionality" class="4u 12u(narrower)">
+        <div class="box highlight">
+          <h3>Standalone HTML Exporters</h3>
+          <p>
+            Export glue's 3D VisPy viewers directly to interactive K3D HTML pages. Exported HTML is standalone and can be used with any static file hosting service.
+          </p>
+
+        </div>
+
+        <div class="box highlight">
+          <h3>Viewers</h3>
+          <p>
+            Two experimental K3D-powered viewers which can be used with glue-jupyter: a 3D scatter viewer, and a 3D volume viewer.
+            See the examples below for guidance on how to use these in your project.
+          </p>
+      </div>
+    </section>
+
+  </section>
+
+  <section id="quickstart" class="nav-item container">
+    <h2>Quickstart</h2>
+    <p>
+      glue-k3d is not (yet) available via pip, but you can install the package directly from our <a href="https://github.com/glue-viz/glue-k3d">GitHub repository</a>:
+    </p>
+    <p><code>pip install git+https://github.com/glue-viz/glue-k3d.git</code></p>
+    </p>
+  </section>
+
+  <section id="exporters" class="nav-item container">
+    <h2>HTML Exporters</h2>
+    <p>
+      glue-K3D allows exporting views from glue's <a href="https://github.com/glue-viz/glue-vispy-viewers">3D VisPy-powered viewers</a> directly to K3D.
+      The exporter is exposed via a viewer tool in the "save" tool menu:
+    </p>
+    <img class="example-image" src="assets/img/export-tool.gif">
+    <p>This is currently only supported in Qt glue, but Jupyter support is coming soon!</p>
+  </section>
+
+  <section id="viewers" class="nav-item container">
+    <h2>Viewers</h2>
+    <p>
+      glue-k3d contains two experimental K3D-powered viewers for use with glue-jupyter: a 3D scatter viewer and a 3D volume viewer.
+      For examples of how to use these, see <a href="k3d_viewers.ipynb">this notebook</a>, which demonstrates necessary imports, viewer creation, and manipulating viewer options.
+    </p>
+  </section>
+
+  </body>
+
+</html>
