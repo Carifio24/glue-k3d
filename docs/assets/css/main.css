@@ -3242,19 +3242,6 @@
     flex-basis: 0;
 }
 
-#plotly-text-logo {
-  aspect-ratio: 1100 / 417;
-}
-
-#chart-studio-logo {
-  aspect-ratio: 74 / 41;
-}
-
-#histogram-viewer-image {
-  aspect-ratio: 5 / 3;
-  max-height: 300px;
-}
-
 .example-container {
   overflow: hidden;
   width: fit-content;
@@ -3262,8 +3249,8 @@
 }
 
 .example-iframe {
-  height: 400px;
-  width: 610px;
+  height: 500px;
+  width: 800px;
 }
 
 #example-export-links {
