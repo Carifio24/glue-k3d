@@ -33,7 +33,3 @@ class K3DVolumeViewerStateWidget(v.VuetifyTemplate):
         link_glue_choices(self, viewer_state, "y_att")
         link_glue_choices(self, viewer_state, "z_att")
         link_glue_choices(self, viewer_state, "reference_data")
-
-        print("Setting up viewer state widget")
-        print(self.reference_data_selected)
-        print(self.viewer_state.reference_data)
