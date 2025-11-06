@@ -21,7 +21,7 @@ def create_plot(state):
         if visible is not None:
             visible_grid = visible
             break
-            
+
     return plot(
         menu_visibility=False,
         grid=grid_bounds(state),
@@ -30,4 +30,5 @@ def create_plot(state):
         label_color=fg_color,
         grid_color=fg_color,
         grid_visible=visible_grid,
+        camera_mode="orbit",
     )
