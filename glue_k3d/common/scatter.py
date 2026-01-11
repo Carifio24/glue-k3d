@@ -1,16 +1,22 @@
 import numpy as np
 
 from k3d import points
-
+from glue_k3d.common.common import bring_into_clip, get_stretches, xyz_bounds
 from glue_k3d.utils import color_info, layer_name, size_info
 
 
-def positions(viewer_state, layer_state):
-    return np.array([
-       layer_state.layer[viewer_state.x_att], 
-       layer_state.layer[viewer_state.y_att], 
-       layer_state.layer[viewer_state.z_att], 
-    ]).transpose().astype(np.float32)
+def positions(viewer_state, layer_state, scaled=True, preserve_aspect=True):
+    xs = layer_state.layer[viewer_state.x_att]
+    ys = layer_state.layer[viewer_state.y_att]
+    zs = layer_state.layer[viewer_state.z_att]
+    vals = [xs, ys, zs]
+
+    if scaled:
+        stretches = get_stretches(viewer_state)
+        bounds = xyz_bounds(viewer_state, with_resolution=False)
+        vals = bring_into_clip(vals, bounds, preserve_aspect=preserve_aspect, stretches=stretches)
+
+    return np.array(vals).transpose().astype(np.float32)
 
 
 def create_scatter(viewer_state, layer_state):
