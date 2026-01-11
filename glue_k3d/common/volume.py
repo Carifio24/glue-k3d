@@ -7,14 +7,7 @@ import numpy as np
 from k3d.factory import volume
 
 from glue_k3d.utils import layer_name, linear_color_map, single_color_map
-
-
-def viewer_bounds(state):
-    return [
-        (state.z_min, state.z_max, state.resolution),
-        (state.y_min, state.y_max, state.resolution),
-        (state.x_min, state.x_max, state.resolution),
-    ]
+from glue_k3d.common.common import clip_sides, xyz_bounds
 
 
 def pixel_cid_order(reference_data, layer):
@@ -26,9 +19,17 @@ def pixel_cid_order(reference_data, layer):
     return order
 
 
+def volume_fit_matrix(viewer_state):
+    sides = clip_sides(viewer_state)
+    bounds = [0] * (2 * len(sides))
+    bounds[1::2] = sides
+    return get_bounds_fit_matrix(*bounds)
+
+
+
 def fixed_resolution_buffer(viewer_state, layer, bounds):
 
-    shape = [bound[2] for bound in bounds]
+    shape = [bound[2] for bound in reversed(bounds)]
 
     if layer is None or viewer_state is None:
         return np.broadcast_to(0, shape)
@@ -83,10 +84,9 @@ def fixed_resolution_buffer(viewer_state, layer, bounds):
     return result
 
 
-
 def volume_data(viewer_state, layer_state, bounds=None):
     if bounds is None:
-        bounds = viewer_bounds(viewer_state)
+        bounds = xyz_bounds(viewer_state, with_resolution=True)
     data = fixed_resolution_buffer(viewer_state, layer_state, bounds)
     data = (data - layer_state.vmin) / (layer_state.vmax - layer_state.vmin)
     data[np.isnan(data)] = 0
@@ -106,13 +106,22 @@ def create_volume(viewer_state, layer_state, with_data=False):
     else:
         cmap = linear_color_map(layer_state.cmap)
 
+    bds = xyz_bounds(viewer_state, with_resolution=True)
     if with_data:
-        bds = viewer_bounds(viewer_state)
         data = volume_data(viewer_state, layer_state, bds)
     else:
         data = np.ndarray((0, 0, 0)).astype(np.float32)
 
-    bounds = [t for b in reversed(viewer_bounds(viewer_state)) for t in b[:2]]
+    bounds = [t for b in xyz_bounds(viewer_state, with_resolution=False) for t in b]
+
+    # For non-native aspect ratio
+    # Say we have a cube (0, 0, 0) to (X, Y, Z) and WLOG X <= Y <= Z
+    # Then we take 0 -> 0 and Z -> 1
+    # so t -> t / Z
+    
+    if not viewer_state.native_aspect:
+        pass
+
     options = dict(
         name=layer_name(layer_state),
         volume=data,
