@@ -31,4 +31,5 @@ def create_plot(state):
         grid_color=fg_color,
         grid_visible=visible_grid,
         camera_mode="orbit",
+        axes_helper=0.0,
     )
