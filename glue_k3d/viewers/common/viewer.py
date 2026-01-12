@@ -1,11 +1,9 @@
-from glue.config import settings
 from glue_jupyter.view import IPyWidgetView
 
-from k3d.factory import plot, points
 from IPython.display import display
 from ipywidgets import HTML
 
-from glue_k3d.common.figure import create_plot, grid_bounds
+from glue_k3d.common.figure import create_plot
 from glue_k3d.utils import to_hex_int
 
 
