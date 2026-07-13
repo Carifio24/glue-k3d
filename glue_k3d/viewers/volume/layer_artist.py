@@ -92,7 +92,6 @@ class K3DVolumeLayerArtist(LayerArtist):
             else:
                 self.volume.color_map = linear_color_map(self.state.cmap)
 
-
     def _update_visual_attributes(self, changed, force=False):
 
         if not self.enabled:
