@@ -1,7 +1,7 @@
 from glue.utils import ensure_numerical
 from glue.core.exceptions import IncompatibleAttribute
 from glue.viewers.common.layer_artist import LayerArtist
-from glue_k3d.common.scatter import create_scatter
+from glue_k3d.common.scatter import create_scatter, positions
 from k3d import points
 import numpy as np
 from glue_k3d.viewers.scatter.layer_state import K3DScatterLayerState
@@ -38,6 +38,7 @@ DATA_PROPERTIES = {
     "layer",
     "x_att",
     "y_att",
+    "z_att",
     "cmap_mode",
     "size_mode",
     "density_map",
@@ -98,6 +99,8 @@ class K3DScatterLayerArtist(LayerArtist):
             return
         else:
             self.enable()
+
+        self.points.positions = positions(self._viewer_state, self.state)
 
     def _update_display(self, force=False, **kwargs):
         changed = self.pop_changed_properties()
