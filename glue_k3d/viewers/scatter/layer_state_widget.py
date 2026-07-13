@@ -15,7 +15,7 @@ class Scatter3DLayerStateWidget(VBox):
         link((self.state, 'shader'), (self.widget_shader, 'value'))
 
         self.widget_size = Size(state=self.state)
-        self.widget_color = Color(state=self.state)
+        self.widget_color = Color(state=self.state, color_mode_attr="cmap_mode")
 
         # self.widget_shininess = FloatSlider(min=0, max=100, value=self.state.shininess, label="Shininess")
         # link((self.state, 'shininess'), (self.widget_shininess, 'value'))
