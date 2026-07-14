@@ -5,7 +5,7 @@ from glue_k3d.common.common import bring_into_clip, get_stretches, xyz_bounds
 from glue_k3d.utils import color_info, layer_name, size_info
 
 
-def positions(viewer_state, layer_state, scaled=True, preserve_aspect=True):
+def positions(viewer_state, layer_state, scaled=False, preserve_aspect=True):
     xs = layer_state.layer[viewer_state.x_att]
     ys = layer_state.layer[viewer_state.y_att]
     zs = layer_state.layer[viewer_state.z_att]

@@ -1,8 +1,4 @@
-from numpy import argsort
-
-from echo import CallbackProperty, SelectionCallbackProperty
-from glue.core.data import BaseData
-from glue.core.data_combo_helper import ManualDataComboHelper
+from echo import CallbackProperty
 from glue.viewers.volume3d.viewer_state import VolumeViewerState3D
 
 from glue_k3d.viewers.common.viewer import K3DBaseView
@@ -14,7 +10,6 @@ from glue_k3d.viewers.volume.viewer_state_widget import K3DVolumeViewerStateWidg
 
 
 class K3DVolumeViewerState(VolumeViewerState3D):
-
     visible_grid = CallbackProperty(True)
 
 

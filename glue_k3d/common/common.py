@@ -65,6 +65,25 @@ def xyz_bounds(viewer_state, with_resolution):
     return bounds
 
 
+def clip_bounds(viewer_state,
+                clip_size=1.0):
+    stretches = get_stretches(viewer_state)
+    bounds = xyz_bounds(viewer_state, with_resolution=False)
+    x_range = viewer_state.x_max - viewer_state.x_min
+    y_range = viewer_state.y_max - viewer_state.y_min
+    z_range = viewer_state.z_max - viewer_state.z_min
+    ranges = (x_range, y_range, z_range)
+    if viewer_state.native_aspect:
+        clip_transforms = clip_linear_transformations(bounds,
+                                                      clip_size=clip_size,
+                                                      stretches=stretches)
+        return tuple(r * transform[0] for r, transform in zip(ranges, clip_transforms))
+    else:
+        max_range = max(ranges)
+        return tuple(2 * clip_size * stretch / max_range for stretch in stretches)
+
+
+
 def clip_sides(viewer_state,
                clip_size=1.0):
 

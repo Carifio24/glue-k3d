@@ -82,7 +82,6 @@ def color_info(layer_state,
 
 
 def size_info(layer_state, mask=None):
-     # set all points to be the same size, with some arbitrary scaling
     if layer_state.size_mode == "Fixed":
         return layer_state.size_scaling * layer_state.size
 
@@ -99,7 +98,7 @@ def size_info(layer_state, mask=None):
     np.clip(s, 0, 1, out=s)
     s *= 0.95
     s += 0.05
-    s *= (45 * layer_state.size_scaling)
+    s *= layer_state.size_scaling
     s[np.isnan(s)] = 0
     return s.astype(np.float32)
 

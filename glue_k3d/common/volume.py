@@ -7,7 +7,7 @@ import numpy as np
 from k3d.factory import volume
 
 from glue_k3d.utils import layer_name, linear_color_map, single_color_map
-from glue_k3d.common.common import clip_sides, xyz_bounds
+from glue_k3d.common.common import clip_bounds, xyz_bounds
 
 
 def pixel_cid_order(reference_data, layer):
@@ -20,9 +20,9 @@ def pixel_cid_order(reference_data, layer):
 
 
 def volume_fit_matrix(viewer_state):
-    sides = clip_sides(viewer_state)
+    sides = clip_bounds(viewer_state)
     bounds = [0] * (2 * len(sides))
-    bounds[1::2] = sides
+    bounds[1::2] = [2 * s for s in sides]
     return get_bounds_fit_matrix(*bounds)
 
 
