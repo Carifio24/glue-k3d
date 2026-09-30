@@ -8,6 +8,7 @@ from glue_k3d.common.volume import viewer_bounds, create_volume, volume_data
 from k3d.transform import get_bounds_fit_matrix
 
 from glue_k3d.utils import linear_color_map, single_color_map
+from glue_k3d.viewers.common.transform import world_bounds
 
 CMAP_PROPERTIES = {"cmap_mode", "cmap", "color", "alpha"}
 VISUAL_PROPERTIES = (
@@ -74,16 +75,15 @@ class K3DVolumeLayerArtist(LayerArtist):
 
     def _update_data(self):
         with self.volume.hold_trait_notifications():
-            bounds = viewer_bounds(self._viewer_state)
             try:
                 data = self._volume_data()
             except:
                 self.disable("Layer data is not fulled linked to x/y/z attributes")
-                shape = [bound[2] for bound in bounds]
+                resolution = self._viewer_state.resolution
+                shape = (resolution, resolution, resolution)
                 data = np.broadcast_to(0, shape)
             self.volume.volume = data
-            bounds = [t for b in reversed(bounds) for t in b[:2]]
-            self.volume.model_matrix = get_bounds_fit_matrix(*bounds)
+            self.volume.model_matrix = get_bounds_fit_matrix(*world_bounds(self._viewer_state))
 
     def _update_cmap(self):
         with self.volume.hold_trait_notifications():
