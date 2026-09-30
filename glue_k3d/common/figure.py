@@ -11,6 +11,16 @@ def grid_bounds(state):
             state.y_min, state.y_max,
             state.z_min, state.z_max))
 
+def clipping_planes(bounds):
+    return [
+        [ 1,  0,  0, -bounds[0]],  # Keeps x >= xmin
+        [-1,  0,  0,  bounds[1]],  # Keeps x <= xmax
+        [ 0,  1,  0, -bounds[2]],  # Keeps y >= ymin
+        [ 0, -1,  0,  bounds[3]],  # Keeps y <= ymax
+        [ 0,  0,  1, -bounds[4]],  # Keeps z >= zmin
+        [ 0,  0, -1,  bounds[5]]   # Keeps z <= zmax
+    ]
+
 
 def create_plot(state):
     fg_color = to_hex_int(settings.FOREGROUND_COLOR)
@@ -22,14 +32,17 @@ def create_plot(state):
             visible_grid = visible
             break
 
+    bounds = grid_bounds(state)
     return plot(
         menu_visibility=False,
-        grid=grid_bounds(state),
+        grid=bounds,
         colorbar_object_id=-1,
         background_color=to_hex_int(settings.BACKGROUND_COLOR),
         label_color=fg_color,
         grid_color=fg_color,
         grid_visible=visible_grid,
+        grid_auto_fit=False,
         camera_mode="orbit",
         axes_helper=0.0,
+        clipping_planes=clipping_planes(bounds) if state.clip_data else None,
     )

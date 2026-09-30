@@ -4,11 +4,12 @@ import uuid
 from echo import CallbackProperty, SelectionCallbackProperty
 from glue.viewers.common.layer_artist import LayerArtist
 from glue_vispy_viewers.volume.layer_state import VolumeLayerState
-from glue_k3d.common.volume import viewer_bounds, create_volume, volume_data
+from glue_k3d.common.volume import create_volume, volume_data
+from glue_k3d.common.transform import world_bounds
 from k3d.transform import get_bounds_fit_matrix
 
 from glue_k3d.utils import linear_color_map, single_color_map
-from glue_k3d.viewers.common.transform import world_bounds
+from glue_k3d.common.transform import world_bounds
 
 CMAP_PROPERTIES = {"cmap_mode", "cmap", "color", "alpha"}
 VISUAL_PROPERTIES = (
@@ -24,6 +25,7 @@ DATA_PROPERTIES = {
     "vmin",
     "vmax",
     "resolution",
+    "native_aspect",
 }
 
 
@@ -74,7 +76,7 @@ class K3DVolumeLayerArtist(LayerArtist):
                 self._update_visual_attributes(changed, force=force)
 
     def _update_data(self):
-        with self.volume.hold_trait_notifications():
+        with self.volume.hold_trait_notifications(), self.volume.hold_sync():
             try:
                 data = self._volume_data()
             except:

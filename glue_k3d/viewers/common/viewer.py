@@ -3,8 +3,11 @@ from glue_jupyter.view import IPyWidgetView
 from IPython.display import display
 from ipywidgets import HTML
 
-from glue_k3d.common.figure import create_plot
+from glue_k3d.common.figure import clipping_planes, create_plot, grid_bounds
 from glue_k3d.utils import to_hex_int
+
+
+LIMIT_PROPERTIES = {"x_min", "x_max", "y_min", "y_max", "z_min", "z_max", "clip_data"}
 
 
 class K3DBaseView(IPyWidgetView):
@@ -15,6 +18,9 @@ class K3DBaseView(IPyWidgetView):
         super().__init__(session, state=state)
 
         self.figure = create_plot(self.state)
+
+        for prop in LIMIT_PROPERTIES:
+            self.state.add_callback(prop, self._update_clipping_planes)
 
         self.state.add_callback("visible_grid", self._update_grid)
 
@@ -52,6 +58,9 @@ class K3DBaseView(IPyWidgetView):
             self.figure.label_color = color
             self.figure.grid_color = color
         return super()._update_appearance_from_settings(message=message)
+
+    def _update_clipping_planes(self, *args):
+        self.figure.clipping_planes = clipping_planes(grid_bounds(self.state)) if self.state.clip_data else None
 
     @property
     def figure_widget(self):

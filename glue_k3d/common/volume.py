@@ -1,12 +1,13 @@
 from glue.core.data import Subset
 from glue.core.link_manager import pixel_cid_to_pixel_cid_matrix
 from glue.core.state_objects import State
-from k3d.transform import get_bounds_fit_matrix
 import numpy as np
 
 from k3d.factory import volume
 
 from glue_k3d.utils import layer_name, linear_color_map, single_color_map
+from glue_k3d.common.transform import world_bounds
+from k3d.transform import get_bounds_fit_matrix
 
 
 def viewer_bounds(state):
@@ -112,14 +113,13 @@ def create_volume(viewer_state, layer_state, with_data=False):
     else:
         data = np.ndarray((0, 0, 0)).astype(np.float32)
 
-    bounds = [t for b in reversed(viewer_bounds(viewer_state)) for t in b[:2]]
     options = dict(
         name=layer_name(layer_state),
         volume=data,
         color_map=cmap,
         color_range=(0, 1),
         alpha_coef=100 * layer_state.alpha,
-        model_matrix = get_bounds_fit_matrix(*bounds)
+        model_matrix = get_bounds_fit_matrix(*world_bounds(viewer_state))
     )
 
     return volume(**options)

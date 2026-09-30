@@ -2,6 +2,7 @@ import numpy as np
 
 from k3d import points
 
+from glue_k3d.common.transform import data_to_world_matrix
 from glue_k3d.utils import color_info, layer_name, size_info
 
 
@@ -20,6 +21,7 @@ def create_scatter(viewer_state, layer_state):
         opacity=layer_state.alpha,
         shader=shader,
         name=layer_name(layer_state),
+        # model_matrix=data_to_world_matrix(viewer_state),
     )
     cmap_mode_attr = "cmap_mode" if hasattr(layer_state, "cmap_mode") else "color_mode"
     cmap_attr = "cmap_att" if hasattr(layer_state, "cmap_att") else "cmap_attribute"

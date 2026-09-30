@@ -4,6 +4,7 @@ from glue.viewers.common.layer_artist import LayerArtist
 from glue_k3d.common.scatter import create_scatter, positions
 from k3d import points
 import numpy as np
+from glue_k3d.common.transform import data_to_world_matrix
 from glue_k3d.viewers.scatter.layer_state import K3DScatterLayerState
 
 from glue_k3d.utils import color_info, size_info
@@ -33,7 +34,7 @@ VISUAL_PROPERTIES = (
     | {"color", "alpha", "zorder", "visible", "shader"}
 )
 
-LIMIT_PROPERTIES = {"x_min", "x_max", "y_min", "y_max"}
+LIMIT_PROPERTIES = {"x_min", "x_max", "y_min", "y_max", "z_min", "z_max"}
 DATA_PROPERTIES = {
     "layer",
     "x_att",
@@ -51,6 +52,7 @@ DATA_PROPERTIES = {
     "line_visible",
     "markers_visible",
     "vector_scaling",
+    "native_aspect",
 }
 LINE_PROPERTIES = {"line_visible", "cmap_mode", "linestyle", "linewidth", "color"}
 
@@ -144,3 +146,5 @@ class K3DScatterLayerArtist(LayerArtist):
                     self.points.colors = []
                 else:
                     self.points.colors = color
+
+        self.view.figure.render()
