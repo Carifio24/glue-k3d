@@ -4,7 +4,7 @@ from IPython.display import display
 from ipywidgets import HTML
 
 from glue_k3d.common.figure import clipping_planes, create_plot
-from glue_k3d.common.transform import viewer_bounds
+from glue_k3d.common.transform import grid_bounds
 from glue_k3d.utils import to_hex_int
 
 
@@ -24,6 +24,8 @@ class K3DBaseView(IPyWidgetView):
             self.state.add_callback(prop, self._update_clipping_planes)
 
         self.state.add_callback("visible_grid", self._update_grid)
+        self.state.add_callback("native_aspect", self._update_grid)
+        self.state.add_callback("native_aspect", self._reset, priority=-1)
 
         # By default, the K3D canvas has a z-index of 10
         # which causes it to be on top of things like our slideout menus
@@ -50,6 +52,13 @@ class K3DBaseView(IPyWidgetView):
     def _update_grid(self, visible):
         self.figure.grid_visible = visible
 
+    def redraw(self):
+        self.figure.render()
+
+    def _reset(self, *args):
+        self.redraw()
+        self.figure.camera_reset()
+
     def _update_appearance_from_settings(self, message=None):
         settings = message.settings
         if "BACKGROUND_COLOR" in settings:
@@ -61,7 +70,7 @@ class K3DBaseView(IPyWidgetView):
         return super()._update_appearance_from_settings(message=message)
 
     def _update_clipping_planes(self, *args):
-        self.figure.clipping_planes = clipping_planes(viewer_bounds(self.state)) if self.state.clip_data else None
+        self.figure.clipping_planes = clipping_planes(grid_bounds(self.state)) if self.state.clip_data else None
 
     @property
     def figure_widget(self):

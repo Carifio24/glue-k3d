@@ -114,7 +114,6 @@ class K3DScatterLayerArtist(LayerArtist):
             self._update_data()
             force = True
 
-
         if force or len(changed & VISUAL_PROPERTIES) > 0:
             self._update_visual_attributes(changed, force=force)
 
@@ -150,5 +149,3 @@ class K3DScatterLayerArtist(LayerArtist):
                     self.points.colors = []
                 else:
                     self.points.colors = color
-
-        self.view.figure.render()

@@ -39,5 +39,5 @@ def create_plot(state):
         camera_mode="orbit",
         axes_helper=0.0,
         camera_up_axis="Z",
-        clipping_planes=clipping_planes(world_bounds(state)) if state.clip_data else None,
+        clipping_planes=clipping_planes(grid_bounds(state)) if state.clip_data else None,
     )
