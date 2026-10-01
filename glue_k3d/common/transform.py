@@ -37,8 +37,14 @@ def grid_bounds(viewer_state):
 
 
 def data_to_world_matrix(viewer_state):
-    d = np.reshape(viewer_bounds(viewer_state), (3, 2))
-    w = np.reshape(world_bounds(viewer_state), (3, 2))
+    world = world_bounds(viewer_state)
+    order = (0, 1, 2, 3, 4, 5)
+    # order = (2, 3, 0, 1, 4, 5)
+    world = [world[i] for i in order]
+    viewer = viewer_bounds(viewer_state)
+    viewer = [viewer[i] for i in order]
+    d = np.reshape(viewer, (3, 2))
+    w = np.reshape(world, (3, 2))
     scale = (w[:, 1] - w[:, 0]) / (d[:, 1] - d[:, 0])
     m = np.diag([*scale, 1.0]).astype(np.float32)
     m[:3, 3] = w[:, 0] - scale * d[:, 0]

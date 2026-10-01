@@ -15,10 +15,9 @@ def positions(viewer_state, layer_state):
 
 
 def model_matrix(viewer_state):
-    if getattr(viewer_state, "native_aspect", True):
-        return np.eye(4).astype(np.float32)
-    else:
-        return data_to_world_matrix(viewer_state)
+    native_aspect = getattr(viewer_state, "native_aspect", True)
+    matrix = np.eye(4) if native_aspect else data_to_world_matrix(viewer_state)
+    return matrix.astype(np.float32)
 
 
 def create_scatter(viewer_state, layer_state):
