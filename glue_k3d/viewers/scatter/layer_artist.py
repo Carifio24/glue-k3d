@@ -1,10 +1,7 @@
 from glue.utils import ensure_numerical
 from glue.core.exceptions import IncompatibleAttribute
 from glue.viewers.common.layer_artist import LayerArtist
-from glue_k3d.common.scatter import create_scatter, positions
-from k3d import points
-import numpy as np
-from glue_k3d.common.transform import data_to_world_matrix
+from glue_k3d.common.scatter import create_scatter, model_matrix, positions
 from glue_k3d.viewers.scatter.layer_state import K3DScatterLayerState
 
 from glue_k3d.utils import color_info, size_info
@@ -34,7 +31,7 @@ VISUAL_PROPERTIES = (
     | {"color", "alpha", "zorder", "visible", "shader"}
 )
 
-LIMIT_PROPERTIES = {"x_min", "x_max", "y_min", "y_max", "z_min", "z_max"}
+LIMIT_PROPERTIES = {"x_min", "x_max", "y_min", "y_max", "z_min", "z_max", "native_aspect"}
 DATA_PROPERTIES = {
     "layer",
     "x_att",
@@ -52,7 +49,6 @@ DATA_PROPERTIES = {
     "line_visible",
     "markers_visible",
     "vector_scaling",
-    "native_aspect",
 }
 LINE_PROPERTIES = {"line_visible", "cmap_mode", "linestyle", "linewidth", "color"}
 
@@ -75,6 +71,9 @@ class K3DScatterLayerArtist(LayerArtist):
     def remove(self):
         self.view.figure -= self.points
         return super().remove()
+
+    def _update_model_matrix(self, *args):
+        self.points.model_matrix = model_matrix(self._viewer_state)
 
     def _update_data(self):
 
@@ -103,13 +102,18 @@ class K3DScatterLayerArtist(LayerArtist):
             self.enable()
 
         self.points.positions = positions(self._viewer_state, self.state)
+        self._update_model_matrix()
 
     def _update_display(self, force=False, **kwargs):
         changed = self.pop_changed_properties()
 
+        if force or any(prop in changed for prop in LIMIT_PROPERTIES):
+            self._update_model_matrix()
+
         if force or len(changed & DATA_PROPERTIES) > 0:
             self._update_data()
             force = True
+
 
         if force or len(changed & VISUAL_PROPERTIES) > 0:
             self._update_visual_attributes(changed, force=force)

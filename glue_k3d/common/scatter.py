@@ -14,6 +14,13 @@ def positions(viewer_state, layer_state):
     ]).transpose().astype(np.float32)
 
 
+def model_matrix(viewer_state):
+    if getattr(viewer_state, "native_aspect", True):
+        return np.eye(4).astype(np.float32)
+    else:
+        return data_to_world_matrix(viewer_state)
+
+
 def create_scatter(viewer_state, layer_state):
     shader = getattr(layer_state, "shader", "mesh")
     options = dict(
@@ -21,7 +28,7 @@ def create_scatter(viewer_state, layer_state):
         opacity=layer_state.alpha,
         shader=shader,
         name=layer_name(layer_state),
-        # model_matrix=data_to_world_matrix(viewer_state),
+        model_matrix=model_matrix(viewer_state),
     )
     cmap_mode_attr = "cmap_mode" if hasattr(layer_state, "cmap_mode") else "color_mode"
     cmap_attr = "cmap_att" if hasattr(layer_state, "cmap_att") else "cmap_attribute"

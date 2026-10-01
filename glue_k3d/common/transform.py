@@ -5,21 +5,39 @@ from matplotlib.ticker import MaxNLocator
 
 CUBE_SIDE = 1
 CUBE_HALF_SIDE = 0.5 * CUBE_SIDE
-CUBE = (-CUBE_HALF_SIDE, CUBE_HALF_SIDE) * 3
+CUBE = (
+    -CUBE_HALF_SIDE, CUBE_HALF_SIDE,
+    -CUBE_HALF_SIDE, CUBE_HALF_SIDE,
+    -CUBE_HALF_SIDE, CUBE_HALF_SIDE,
+)
 
 
-def data_bounds(viewer_state):
-    return (viewer_state.x_min, viewer_state.x_max,
-            viewer_state.y_min, viewer_state.y_max,
-            viewer_state.z_min, viewer_state.z_max)
+def viewer_bounds(state):
+    return (
+        float(state.x_min), float(state.x_max),
+        float(state.y_min), float(state.y_max),
+        float(state.z_min), float(state.z_max),
+    )
 
 
 def world_bounds(viewer_state):
-    return data_bounds(viewer_state) if getattr(viewer_state, "native_aspect", True) else CUBE
+    return viewer_bounds(viewer_state) if getattr(viewer_state, "native_aspect", True) else CUBE
+
+
+# TODO: I don't know why we need to flip these?
+# but if we don't, x and y are flipped.
+# Maybe because we set camera_up_axis to Z?
+def grid_bounds(viewer_state):
+    bounds = world_bounds(viewer_state)
+    return (
+        bounds[2], bounds[3],
+        bounds[0], bounds[1],
+        bounds[4], bounds[5],
+    )
 
 
 def data_to_world_matrix(viewer_state):
-    d = np.reshape(data_bounds(viewer_state), (3, 2))
+    d = np.reshape(viewer_bounds(viewer_state), (3, 2))
     w = np.reshape(world_bounds(viewer_state), (3, 2))
     scale = (w[:, 1] - w[:, 0]) / (d[:, 1] - d[:, 0])
     m = np.diag([*scale, 1.0]).astype(np.float32)
@@ -28,7 +46,7 @@ def data_to_world_matrix(viewer_state):
 
 
 def cube_axes(state, color, nticks=5):
-    d = np.reshape(data_bounds(state), (3, 2))
+    d = np.reshape(viewer_bounds(state), (3, 2))
     w = np.reshape(CUBE, (3, 2))
     objs = []
     N_CORNERS = 8

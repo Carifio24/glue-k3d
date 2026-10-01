@@ -3,7 +3,8 @@ from glue_jupyter.view import IPyWidgetView
 from IPython.display import display
 from ipywidgets import HTML
 
-from glue_k3d.common.figure import clipping_planes, create_plot, grid_bounds
+from glue_k3d.common.figure import clipping_planes, create_plot
+from glue_k3d.common.transform import viewer_bounds
 from glue_k3d.utils import to_hex_int
 
 
@@ -60,7 +61,7 @@ class K3DBaseView(IPyWidgetView):
         return super()._update_appearance_from_settings(message=message)
 
     def _update_clipping_planes(self, *args):
-        self.figure.clipping_planes = clipping_planes(grid_bounds(self.state)) if self.state.clip_data else None
+        self.figure.clipping_planes = clipping_planes(viewer_bounds(self.state)) if self.state.clip_data else None
 
     @property
     def figure_widget(self):

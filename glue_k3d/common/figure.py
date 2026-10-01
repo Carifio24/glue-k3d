@@ -3,13 +3,8 @@ from k3d.factory import plot
 from glue.config import settings
 
 from glue_k3d.utils import to_hex_int
+from glue_k3d.common.transform import grid_bounds, world_bounds
 
-
-def grid_bounds(state):
-    return tuple(float(w) for w in
-            (state.x_min, state.x_max,
-            state.y_min, state.y_max,
-            state.z_min, state.z_max))
 
 def clipping_planes(bounds):
     return [
@@ -32,10 +27,9 @@ def create_plot(state):
             visible_grid = visible
             break
 
-    bounds = grid_bounds(state)
     return plot(
         menu_visibility=False,
-        grid=bounds,
+        grid=grid_bounds(state),
         colorbar_object_id=-1,
         background_color=to_hex_int(settings.BACKGROUND_COLOR),
         label_color=fg_color,
@@ -44,5 +38,6 @@ def create_plot(state):
         grid_auto_fit=False,
         camera_mode="orbit",
         axes_helper=0.0,
-        clipping_planes=clipping_planes(bounds) if state.clip_data else None,
+        camera_up_axis="Z",
+        clipping_planes=clipping_planes(world_bounds(state)) if state.clip_data else None,
     )
