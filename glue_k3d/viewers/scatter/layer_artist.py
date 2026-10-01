@@ -72,8 +72,11 @@ class K3DScatterLayerArtist(LayerArtist):
         self.view.figure -= self.points
         return super().remove()
 
-    def _update_model_matrix(self, *args):
-        self.points.model_matrix = model_matrix(self._viewer_state)
+    def _update_points(self):
+        # We could update the points' model matrix, but that seemed to distort
+        # the spheres into ellipsoids when changing between native and non-native aspects.
+        # So instead we just transform the positions here.
+        self.points.positions = positions(self._viewer_state, self.state)
 
     def _update_data(self):
 
@@ -101,14 +104,10 @@ class K3DScatterLayerArtist(LayerArtist):
         else:
             self.enable()
 
-        self.points.positions = positions(self._viewer_state, self.state)
-        self._update_model_matrix()
+        self._update_points()
 
     def _update_display(self, force=False, **kwargs):
         changed = self.pop_changed_properties()
-
-        if force or any(prop in changed for prop in LIMIT_PROPERTIES):
-            self._update_model_matrix()
 
         if force or len(changed & DATA_PROPERTIES) > 0:
             self._update_data()

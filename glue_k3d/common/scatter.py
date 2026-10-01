@@ -7,14 +7,21 @@ from glue_k3d.utils import color_info, layer_name, size_info
 
 
 def positions(viewer_state, layer_state):
-    return np.array([
+    values = np.array([
        layer_state.layer[viewer_state.x_att], 
        layer_state.layer[viewer_state.y_att], 
        layer_state.layer[viewer_state.z_att], 
     ]).transpose().astype(np.float32)
+    if not getattr(viewer_state, "native_aspect", True):
+        rst = rst_matrix(viewer_state)
+        rs = rst[:3, :3]
+        t = rst[:3, 3]
+        values = (values @ rs.T) + t
+    
+    return values
 
 
-def model_matrix(viewer_state):
+def rst_matrix(viewer_state):
     native_aspect = getattr(viewer_state, "native_aspect", True)
     matrix = np.eye(4) if native_aspect else data_to_world_matrix(viewer_state)
     return matrix.astype(np.float32)
